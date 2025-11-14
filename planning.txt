@@ -1,0 +1,63 @@
+USER STORIES
+
+BASIC
+
+US01: As a user, I want to add a new task so that I can keep track of things to do.
+
+US02: As a user, I want to mark a task as completed so that I know what I’ve finished.
+
+US03: As a user, I want to delete a task so that I can remove items I don't need.
+
+US04: As a user, I want to view all my tasks in a list so that I can stay organized.
+
+ADVANCED
+
+US05: As a user, I want my tasks to be saved automatically so I don’t lose them when I reload the page.
+
+US06: As a user, I want to filter tasks (all / completed / pending).
+
+---------------------------------------------------------------------------------------------------
+
+FEATURES
+
+BASIC
+
+1. Add Task
+
+        - Input field + “Add” button.
+
+        - Validates empty input.
+
+2. Delete Task
+
+        - Trash/delete button next to each task.
+
+3. Mark Complete / Incomplete
+
+        - Checkbox or strike-through effect.
+
+4. Task List Rendering
+
+        - UI updates dynamically based on task objects.
+
+ADVANCED
+
+5. LocalStorage Persistence
+
+        - Save all tasks on update.
+
+        - Load when app starts.
+
+6. Filters
+
+        - Show: All, Completed, Pending.
+
+7. Timestamp
+
+        - Show when a task was created.
+
+----------------------------------------------------------------------------------------------------------
+
+FLOWCHART
+
+https://www.figma.com/board/a4kVpUpVlO4DGb1uOT5yfQ/Todo-App-Flowchart?node-id=0-1&t=SpEJe7K4kgNeBkLe-1
