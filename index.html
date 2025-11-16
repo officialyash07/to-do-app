@@ -16,8 +16,21 @@
                     type="text"
                     id="taskInput"
                     placeholder="Enter a new task..."
+                    autofocus
                 />
                 <button id="addTaskBtn">Add</button>
+            </div>
+
+            <div class="filters">
+                <button class="filterBtn">
+                    All <span class="badge" id="allBadge">0</span>
+                </button>
+                <button class="filterBtn">
+                    Completed <span class="badge" id="completedBadge">0</span>
+                </button>
+                <button class="filterBtn">
+                    Pending <span class="badge" id="pendingBadge">0</span>
+                </button>
             </div>
 
             <ul id="taskList"></ul>

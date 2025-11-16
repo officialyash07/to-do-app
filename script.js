@@ -3,46 +3,68 @@ const addButton = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
 
 class Task {
-    constructor(id, title, isCompleted = false) {
+    constructor(id, title, status = "pending") {
         this.id = id;
         this.title = title;
-        this.isCompleted = isCompleted;
+        this.status = status;
     }
 
-    toggleCompletion() {
-        this.isCompleted = !this.isCompleted;
+    toggleStatus() {
+        this.status = this.status === "pending" ? "completed" : "pending";
     }
 }
 
 class TaskManager {
     constructor() {
         this.tasks = [];
+        this.currentFilter = "all";
     }
 
     addTask(title) {
         const task = new Task(Date.now(), title);
         this.tasks.push(task);
+        this.updateBadges();
     }
 
     deleteTask(id) {
         this.tasks = this.tasks.filter((task) => task.id !== id);
+        this.updateBadges();
     }
 
     toggleTaskCompletion(id) {
         const task = this.tasks.find((task) => task.id === id);
-        if (task) task.toggleCompletion();
+        if (task) {
+            task.toggleStatus();
+            this.updateBadges();
+        }
+    }
+
+    setFilter(filter) {
+        this.currentFilter = filter;
+        this.renderTasks();
+    }
+
+    getFilteredTasks() {
+        if (this.currentFilter === "pending") {
+            return this.tasks.filter((task) => task.status === "pending");
+        }
+        if (this.currentFilter === "completed") {
+            return this.tasks.filter((task) => task.status === "completed");
+        }
+        return this.tasks;
     }
 
     renderTasks() {
         taskList.innerHTML = "";
 
-        this.tasks.forEach((task) => {
+        const filteredTasks = this.getFilteredTasks();
+        filteredTasks.forEach((task) => {
             taskList.innerHTML += `
-      <li class="task-item ${task.isCompleted ? "completed" : ""}">
+      <li class="task-item ${task.status === "completed" ? "completed" : ""}">
         <div class="task-left">
           <input 
             type="checkbox" 
-            ${task.isCompleted ? "checked" : ""}
+            ${task.status === "completed" ? "checked" : ""}
             onchange="taskManager.toggleTaskCompletion(${
                 task.id
             }); taskManager.saveTasks(); taskManager.renderTasks();"
@@ -61,6 +83,22 @@ class TaskManager {
       </li>
     `;
         });
+
+        this.updateBadges();
+    }
+
+    updateBadges() {
+        const allCount = this.tasks.length;
+        const completedCount = this.tasks.filter(
+            (task) => task.status === "completed"
+        ).length;
+        const pendingCount = this.tasks.filter(
+            (task) => task.status === "pending"
+        ).length;
+
+        document.getElementById("allBadge").textContent = allCount;
+        document.getElementById("completedBadge").textContent = completedCount;
+        document.getElementById("pendingBadge").textContent = pendingCount;
     }
 
     saveTasks() {
@@ -71,7 +109,7 @@ class TaskManager {
         const tasks = JSON.parse(localStorage.getItem("tasks"));
         if (tasks) {
             this.tasks = tasks.map(
-                (task) => new Task(task.id, task.title, task.isCompleted)
+                (task) => new Task(task.id, task.title, task.status)
             );
         }
     }
@@ -80,6 +118,7 @@ class TaskManager {
 const taskManager = new TaskManager();
 taskManager.loadTasks();
 taskManager.renderTasks();
+taskManager.updateBadges();
 
 function addNewTask() {
     const title = input.value.trim();
@@ -99,3 +138,15 @@ addButton.addEventListener("click", () => {
 window.addEventListener("keypress", (event) => {
     if (event.key === "Enter") addNewTask();
 });
+
+const filterButtons = document.querySelectorAll(".filterBtn");
+filterButtons.forEach((button, index) => {
+    const filters = ["all", "completed", "pending"];
+    button.addEventListener("click", () => {
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+        taskManager.setFilter(filters[index]);
+    });
+});
+
+filterButtons[0].classList.add("active");
